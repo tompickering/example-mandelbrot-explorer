@@ -1,5 +1,7 @@
 #include <iostream>
 #include <cmath>
+#include <cstdlib>
+#include <cstring>
 
 #include "SDL/SDL.h"
 
@@ -23,6 +25,13 @@ void drawfract(Uint32* pixels, double cx, double cy, double xr, double yr) {
   int x, y, i;
   double rttwo = sqrt(2.);
 
+  Uint32** px = (Uint32**)malloc(H*sizeof(Uint32*));
+  for (i = 0; i < H; ++i) {
+      Uint32* r = (Uint32*)malloc(W*sizeof(Uint32));
+      px[i] = r;
+  }
+
+#pragma omp parallel for private(x,y,i)
   for (y = 0; y < H; ++y) {
     Complex z;
     Complex c;
@@ -31,7 +40,7 @@ void drawfract(Uint32* pixels, double cx, double cy, double xr, double yr) {
       c.r = cx + (2. * xr * (double) x / (double) W) - xr;
       c.i = cy + (2. * yr * (double) y / (double) W) - yr;
 
-      for (i = 0; i < 100; ++i) {
+      for (i = 0; i < 200; ++i) {
 	    z = z * z;
 	    z = z + c;
 
@@ -39,12 +48,15 @@ void drawfract(Uint32* pixels, double cx, double cy, double xr, double yr) {
       }
 
       if (z.r <= 2. && z.i <= 2. && z.r > -2. && z.i > -2.) {
-	    pixels[x + y * W] = (z.modulus() / rttwo) * col + (0x0000FF - col);
-	    //if (pixels[x + y * W] <= 0x000022) pixels[x + y * W] += 0x000022;
+	    px[y][x] = (z.modulus() / rttwo) * col + (0x0000FF - col);
       } else {
-	    pixels[x + y * W] = 0;
+	    px[y][x] = 0;
       }
     }
+  }
+
+  for (i = 0; i < H; ++i) {
+      memcpy(&pixels[i*W], px[i], W*sizeof(Uint32));
   }
 }
 
