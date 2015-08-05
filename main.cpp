@@ -41,8 +41,6 @@ void drawfract(Uint32* pixels, double cx, double cy, double xr, double yr) {
 
       if (z.r <= 2. && z.i <= 2. && z.r > -2. && z.i > -2.) {
 	    pixels[x + y * W] = (z.modulus() / rttwo) * col + (0x0000FF - col);
-	    //pixels[x + y * W] = 0x0000FF;
-	    //if (pixels[x + y * W] <= 0x000022) pixels[x + y * W] += 0x000022;
       } else {
 	    pixels[x + y * W] = 0;
       }
