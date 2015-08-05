@@ -3,22 +3,21 @@
 #define GUARD_COMPLEX_HPP
 
 class Complex {
-  public:
-    Complex();
-    Complex(double, double);
+    public:
+        Complex();
+        Complex(double, double);
 
-    //Complex& operator=(const );
-    Complex operator+(const Complex& b);
-    Complex operator-(const Complex& b);
-    Complex operator*(const Complex& b);
-    Complex operator/(const Complex& b);
+        Complex operator+(const Complex& b);
+        Complex operator-(const Complex& b);
+        Complex operator*(const Complex& b);
+        Complex operator/(const Complex& b);
 
-    double modulus();
+        double modulus();
 
-    void print();
+        void print();
 
-    double r;
-    double i;
+        double r;
+        double i;
 };
 
 #endif
