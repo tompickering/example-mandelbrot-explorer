@@ -25,7 +25,7 @@ void drawfract(Uint32* pixels, double cx, double cy, double xr, double yr) {
 
 /* This section of code is 'embarassingly parallel', meaning that
  * there is no dependency between loop iterations and as such, the
- * workload can be very easily divided between multiple computation
+ * workload can be very easily divided between multiple computational
  * units. This loop is by far the most intensive component of the
  * program, so parallelising it yields huge speed advantages.
  *
@@ -35,7 +35,7 @@ void drawfract(Uint32* pixels, double cx, double cy, double xr, double yr) {
  * each processing unit will need its own copy of.
  *
  * It would be possible to write this loop to be executable on a GPU
- * by using a language called OpenCL which could potentially make this
+ * by using OpenCL (or similar) which could potentially make this
  * step even faster.
  */
 #pragma omp parallel for private (x,y,i)
@@ -51,7 +51,7 @@ void drawfract(Uint32* pixels, double cx, double cy, double xr, double yr) {
             c.r = cx + (2. * xr * (double) x / (double) W) - xr;
             c.i = cy + (2. * yr * (double) y / (double) W) - yr;
 
-            /* This can be inaccurate, so we have to stop
+            /* This can be inaccurate - we have to stop
              * computation arbitrarily, at which point we should
              * have a good idea of whether or not the point is
              * likely to be in the Mandelbrot set for most cases.
@@ -67,7 +67,7 @@ void drawfract(Uint32* pixels, double cx, double cy, double xr, double yr) {
             }
 
             if (z.r <= 2. && z.i <= 2. && z.r > -2. && z.i > -2.) {
-                // In set - set pixel to a colour.
+                // In Mandelbrot set - set pixel to a colour.
                 pixels[x + y * W] = 0x0000FF;
 
                 /* Makng the colour intensity a function of z.modulus()
@@ -76,7 +76,7 @@ void drawfract(Uint32* pixels, double cx, double cy, double xr, double yr) {
                  */
                 //pixels[x + y * W] = (z.modulus() / rttwo) * col + (0x0000FF - col);
             } else {
-                // Not in set - set pixel to black.
+                // Not in Mandelbrot set - set pixel to black.
                 pixels[x + y * W] = 0;
             }
         }
@@ -97,9 +97,9 @@ int main(int argc, char** argv) {
     Uint32* pixels;
 
     /* The number of OpenMP threads to be used
-     * can be set explicitly, however it will
-     * automatically detect the best number of
-     * threads to use on a given system.
+     * can be set explicitly, however the compiled
+     * program should automatically detect the optimal
+     * number of threads to use on supporting systems.
      */
     //omp_set_num_threads(4);
 
@@ -129,7 +129,7 @@ int main(int argc, char** argv) {
                         cy += (((double) e.button.y / (double) H) - 0.5) * 2. * yr;
 
                         /* Zoom in or out by adjusting the range of x and y
-                         * which will be rendered in the next image.
+                         * to be rendered in the next image.
                          */
                         if (e.button.button == SDL_BUTTON_LEFT) {
                             xr /= ZOOM_FACTOR;
