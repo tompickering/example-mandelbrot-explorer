@@ -60,23 +60,27 @@ void drawfract(Uint32* pixels, double cx, double cy, double xr, double yr) {
                 z = z * z;
                 z = z + c;
 
-                /* The point has stayed close to the centre, and
-                 * is likely to be in the Mandelbrot set.
+                /* The point is starting to get quite far from
+                 * the centre, so it's probably not in the set.
                  */
                 if (z.r > 2. || z.i > 2. || z.r < -2. || z.i < -2.) break;
             }
 
             if (z.r <= 2. && z.i <= 2. && z.r > -2. && z.i > -2.) {
-                // In Mandelbrot set - set pixel to a colour.
+                /* If this condition still holds after the loop,
+                 * the point has stayed close to the centre and
+                 * is likely to be in the Mandelbrot set. Set
+                 * the pixel to a colour.
+                 */
                 pixels[x + y * W] = 0x0000FF;
 
-                /* Makng the colour intensity a function of z.modulus()
+                /* Making the colour intensity a function of z.modulus()
                  * was an experiment which both had an interesting effect
                  * on the image and also made it look prettier :) .
                  */
                 //pixels[x + y * W] = (z.modulus() / rttwo) * col + (0x0000FF - col);
             } else {
-                // Not in Mandelbrot set - set pixel to black.
+                /* Not in Mandelbrot set - set pixel to black. */
                 pixels[x + y * W] = 0;
             }
         }
